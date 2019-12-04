@@ -1,7 +1,9 @@
 pragma solidity 0.4.25;
 pragma experimental ABIEncoderV2;
 
-contract LeilaoStorage {
+import "./leilao_token.sol";
+
+contract LeilaoStorage is LeilaoToken {
 
     uint count_item;
 
@@ -12,6 +14,7 @@ contract LeilaoStorage {
         string titulo; // Titulo do item
         string descricao; // Descricao do item
         
+        uint token; // Token do item (contagem de itens)
         uint valor_inicial; // Valor inicial (base) do item
         uint lance_atual; //Valor atual do item
         uint data_criacao; //Data da criação quando é feito o deploy do contrato
@@ -27,15 +30,14 @@ contract LeilaoStorage {
     Item[] public itensAdicionados;
     
     function adicionar_item(string _titulo, string _descricao, uint _valor_inicial, uint _qtd_dias) public {
-        Item memory novo_item = Item(0, msg.sender, _titulo, _descricao, _valor_inicial, _valor_inicial, now, now + _qtd_dias);
         count_item++;
+        
+        Item memory novo_item = Item(0, msg.sender, _titulo, _descricao, count_item,
+                                    _valor_inicial, _valor_inicial, now, now + _qtd_dias);
+        
+        ownerTokenCount[this]++;
+        _tokenOwner[novo_item.token] = this;
         itens[count_item] = novo_item;
-        ownerTokenCount[]
         itensAdicionados.push(novo_item);
-    }
-    
-    function _criar_token() private {
-        
-        
     }
 }
