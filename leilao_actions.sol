@@ -1,61 +1,81 @@
 pragma solidity 0.4.25;
 pragma experimental ABIEncoderV2;
 
-import "./erc721.sol";
-import "./leilao_storage.sol";
+import "./leilao_token.sol";
 
-contract LeilaoActions is LeilaoStorage {
+contract LeilaoActions is LeilaoToken {
+    
+    // event ItemAdicionado()
+    
+    event LeilaoFinalizado(uint num_item, address vencedor);
+    
     
     function get_itens_leilao() view public returns(Item[]) {
         return itensAdicionados;
     }
-    
+
+
     function dar_lance(uint _num_item) public payable {
-        require(itens[_num_item].dono != 0, "Esse item não está mais disponível.");
+        require(itens[_num_item].dono != 0, "Esse item não está disponível.");
+        
         Item storage item_atual = itens[_num_item];
-        
-        require(now < item_atual.qtd_dias);
-        
-        require(msg.value > 0, "O valor não pode ser menor ou igual a zero.");
-        require(msg.value > item_atual.lance_atual, "O valor não pode ser menor que o lance atual.");
-        
+
+        require(now < (item_atual.data_expiracao), "Este item já expirou. Verique o ganhador.");
+        require((msg.value * 1 ether) >= item_atual.lance_atual + item_atual.diferenca_minima, "O valor não atingiu a diferença mínima.");
+        require((msg.value * 1 ether) > item_atual.lance_atual, "O valor não pode ser menor que o lance atual.");
+
         // Caso o item atual ja tenha recebido lance, reembolsar a pessoa que deu lance antes dele
         if(item_atual.dono_lance_atual != 0){
-            transferir(item_atual.dono_lance_atual, item_atual.lance_atual);
+            _transferir(item_atual.dono_lance_atual, item_atual.lance_atual);
         }
-        
+
         item_atual.dono_lance_atual = msg.sender;
-        item_atual.lance_atual = msg.value;
-        
+        item_atual.lance_atual = msg.value * 1 ether;
     }
-    
-    function get_ganhador(uint _num_item) view public returns(address) {
+
+
+    function ver_ganhador(uint _num_item) view public returns(address) {
         require(itens[_num_item].dono != 0, "Esse item não está mais disponível.");
+
         Item storage item_atual = itens[_num_item];
         
-        require(item_atual.valor_inicial != item_atual.lance_atual, "Este item não teve lances.");
-        
-        uint tempo_remanescente = now - item_atual.data_criacao;
-        
-        // uint256 t = item_atual.token.balanceOf(item_atual.dono);
-        // Caso o item não tenha recebido lance, envia o token de volta pro dono do item
-        if(item_atual.dono_lance_atual == 0){
-            // item_atual.token.transfer(item_atual.dono, t);
+        if (now >= item_atual.data_expiracao) {
+            _realizar_tramites(_num_item);
+        } else if (item_atual.valor_inicial == item_atual.lance_atual) {
             return item_atual.dono;
-        }else{
-            if(tempo_remanescente >= item_atual.qtd_dias){
-                // Transfere o valor do lance pro criador do lance e envia o token para o ganhador do leilão
-                transferir(item_atual.dono, item_atual.lance_atual);
-                // item_atual.token.transfer(item_atual.dono_lance_atual, t);
-                return item_atual.dono_lance_atual;
-            }
+        }
+        
+        return item_atual.dono_lance_atual;
+    }
+
+    
+    function finalizar_leilao(uint256 _num_item) public onlyOwnerOfItem(_num_item) {
+        Item storage item_atual = itens[_num_item];
+        
+        if (now <= (item_atual.data_expiracao)) {
+            item_atual.data_expiracao = now;
+        }
+        
+        _realizar_tramites(_num_item);
+        
+        // emit
+    }
+
+    
+    function _realizar_tramites(uint256 _num_item) private {
+        Item storage item_atual = itens[_num_item];
+        
+        if (item_atual.dono_lance_atual == 0) {
+            delete itens[_num_item];
+        } else {
+            _transferir(item_atual.dono, item_atual.lance_atual);
+            transfer(item_atual.dono_lance_atual, item_atual.token);
+            delete itens[_num_item];
         }
     }
-    
-    function transferir(address _dono_lance_anterior, uint _valor) private {
+
+
+    function _transferir(address _dono_lance_anterior, uint _valor) private {
         _dono_lance_anterior.transfer(_valor);
     }
-    
-    
-    
 }
