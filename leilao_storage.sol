@@ -31,13 +31,13 @@ contract LeilaoStorage {
         _;
     }
 
-    mapping(uint => Item) public itens; // mapping de itens
+    mapping (uint => Item) public itens; // mapping de itens
     
     mapping (address => uint256) public ownerTokenCount; // Armazena o saldo de cada conta que possui tokens
     
     mapping (uint256 => address) internal _tokenOwner; // Relaciona o token com o dono
     
-    Item[] public itensAdicionados;
+    Item[] public itens_disponiveis;
 
     function adicionar_item(string _titulo, string _descricao, uint _valor_inicial, uint _diferenca_minima, uint _qtd_dias) public {
         count_item++;
@@ -55,8 +55,10 @@ contract LeilaoStorage {
         ownerTokenCount[this]++;
         _tokenOwner[novo_item.token] = this;
         itens[count_item] = novo_item;
-        itensAdicionados.push(novo_item);
+        
+        itens_disponiveis.push(novo_item);
         
         emit ItemAdicionado(novo_item.titulo, novo_item.descricao, novo_item.valor_inicial, novo_item.diferenca_minima, novo_item.data_expiracao);
     }
 }
+

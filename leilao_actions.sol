@@ -4,15 +4,9 @@ pragma experimental ABIEncoderV2;
 import "./leilao_token.sol";
 
 contract LeilaoActions is LeilaoToken {
-    
+
     event LanceAdicionado(address bidder, uint num_item, uint valor_lance);
     event LeilaoFinalizado(uint num_item, address vencedor);
-    
-    
-    function get_itens_leilao() view public returns(Item[]) {
-        return itensAdicionados;
-    }
-
 
     function dar_lance(uint _num_item) public payable {
         require(itens[_num_item].dono != 0, "Esse item não está disponível.");
@@ -32,7 +26,6 @@ contract LeilaoActions is LeilaoToken {
         item_atual.lance_atual = msg.value * 1 ether;
         
         emit LanceAdicionado(item_atual.dono_lance_atual, _num_item, item_atual.lance_atual);
-        
     }
 
 
@@ -50,7 +43,7 @@ contract LeilaoActions is LeilaoToken {
         return item_atual.dono_lance_atual;
     }
 
-    
+
     function finalizar_leilao(uint256 _num_item) public onlyOwnerOfItem(_num_item) {
         Item storage item_atual = itens[_num_item];
         
@@ -67,13 +60,17 @@ contract LeilaoActions is LeilaoToken {
     function _realizar_tramites(uint256 _num_item) private {
         Item storage item_atual = itens[_num_item];
         
-        if (item_atual.dono_lance_atual == 0) {
-            delete itens[_num_item];
-        } else {
+        if (item_atual.dono_lance_atual != 0) {
             _transferir(item_atual.dono, item_atual.lance_atual);
             transfer(item_atual.dono_lance_atual, item_atual.token);
-            delete itens[_num_item];
         }
+        
+        delete itens[_num_item];
+        for (uint i = 0; i < itens_disponiveis.length; i++) {
+            if (itens_disponiveis[i].token == _num_item) {
+                delete itens_disponiveis[i];
+            }
+        }            
     }
 
 
