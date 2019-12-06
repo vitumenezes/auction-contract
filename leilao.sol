@@ -48,9 +48,9 @@ contract Leilao {
                                     _titulo,
                                     _descricao,
                                     count_item,
-                                    (_valor_inicial * 1 ether),
-                                    (_valor_inicial * 1 ether),
-                                    (_diferenca_minima * 1 ether),
+                                    _valor_inicial,
+                                    _valor_inicial,
+                                    _diferenca_minima,
                                     (now + _qtd_dias * 1 days));
 
         ownerTokenCount[this]++;
@@ -98,8 +98,8 @@ contract Leilao {
         Item storage item_atual = itens[_num_item];
 
         require(now < (item_atual.data_expiracao), "Este item já expirou. Verique o ganhador.");
-        require((msg.value * 1 ether) >= item_atual.lance_atual + item_atual.diferenca_minima, "O valor não atingiu a diferença mínima.");
-        require((msg.value * 1 ether) > item_atual.lance_atual, "O valor não pode ser menor que o lance atual.");
+        require(msg.value >= item_atual.lance_atual + item_atual.diferenca_minima, "O valor não atingiu a diferença mínima.");
+        require(msg.value > item_atual.lance_atual, "O valor não pode ser menor que o lance atual.");
 
         // Caso o item atual ja tenha recebido lance, reembolsar a pessoa que deu lance antes dele
         if(item_atual.dono_lance_atual != 0){
@@ -107,7 +107,7 @@ contract Leilao {
         }
 
         item_atual.dono_lance_atual = msg.sender;
-        item_atual.lance_atual = msg.value * 1 ether;
+        item_atual.lance_atual = msg.value;
         
         emit LanceAdicionado(item_atual.dono_lance_atual, _num_item, item_atual.lance_atual);
     }
@@ -158,4 +158,3 @@ contract Leilao {
         _dono_lance_anterior.transfer(_valor);
     }
 }
-
