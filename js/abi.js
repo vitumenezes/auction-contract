@@ -3,6 +3,145 @@ var abi = [
 		"constant": false,
 		"inputs": [
 			{
+				"name": "_to",
+				"type": "address"
+			},
+			{
+				"name": "_tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "approve",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "itens",
+		"outputs": [
+			{
+				"name": "dono_lance_atual",
+				"type": "address"
+			},
+			{
+				"name": "dono",
+				"type": "address"
+			},
+			{
+				"name": "titulo",
+				"type": "string"
+			},
+			{
+				"name": "descricao",
+				"type": "string"
+			},
+			{
+				"name": "token",
+				"type": "uint256"
+			},
+			{
+				"name": "valor_inicial",
+				"type": "uint256"
+			},
+			{
+				"name": "lance_atual",
+				"type": "uint256"
+			},
+			{
+				"name": "diferenca_minima",
+				"type": "uint256"
+			},
+			{
+				"name": "data_expiracao",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "itens_disponiveis",
+		"outputs": [
+			{
+				"name": "dono_lance_atual",
+				"type": "address"
+			},
+			{
+				"name": "dono",
+				"type": "address"
+			},
+			{
+				"name": "titulo",
+				"type": "string"
+			},
+			{
+				"name": "descricao",
+				"type": "string"
+			},
+			{
+				"name": "token",
+				"type": "uint256"
+			},
+			{
+				"name": "valor_inicial",
+				"type": "uint256"
+			},
+			{
+				"name": "lance_atual",
+				"type": "uint256"
+			},
+			{
+				"name": "diferenca_minima",
+				"type": "uint256"
+			},
+			{
+				"name": "data_expiracao",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_owner",
+				"type": "address"
+			}
+		],
+		"name": "balanceOf",
+		"outputs": [
+			{
+				"name": "_balance",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
 				"name": "_titulo",
 				"type": "string"
 			},
@@ -30,6 +169,25 @@ var abi = [
 		"type": "function"
 	},
 	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "_num_item",
+				"type": "uint256"
+			}
+		],
+		"name": "ver_ganhador",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"constant": false,
 		"inputs": [
 			{
@@ -41,7 +199,7 @@ var abi = [
 				"type": "uint256"
 			}
 		],
-		"name": "approve",
+		"name": "transfer",
 		"outputs": [],
 		"payable": false,
 		"stateMutability": "nonpayable",
@@ -65,20 +223,6 @@ var abi = [
 		"constant": false,
 		"inputs": [
 			{
-				"name": "_num_item",
-				"type": "uint256"
-			}
-		],
-		"name": "finalizar_leilao",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
 				"name": "_tokenId",
 				"type": "uint256"
 			}
@@ -90,18 +234,33 @@ var abi = [
 		"type": "function"
 	},
 	{
-		"constant": false,
+		"constant": true,
 		"inputs": [
 			{
-				"name": "_to",
+				"name": "",
 				"type": "address"
-			},
+			}
+		],
+		"name": "ownerTokenCount",
+		"outputs": [
 			{
-				"name": "_tokenId",
+				"name": "",
 				"type": "uint256"
 			}
 		],
-		"name": "transfer",
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "_num_item",
+				"type": "uint256"
+			}
+		],
+		"name": "finalizar_leilao",
 		"outputs": [],
 		"payable": false,
 		"stateMutability": "nonpayable",
@@ -221,164 +380,5 @@ var abi = [
 		],
 		"name": "Approval",
 		"type": "event"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "_owner",
-				"type": "address"
-			}
-		],
-		"name": "balanceOf",
-		"outputs": [
-			{
-				"name": "_balance",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "itens",
-		"outputs": [
-			{
-				"name": "dono_lance_atual",
-				"type": "address"
-			},
-			{
-				"name": "dono",
-				"type": "address"
-			},
-			{
-				"name": "titulo",
-				"type": "string"
-			},
-			{
-				"name": "descricao",
-				"type": "string"
-			},
-			{
-				"name": "token",
-				"type": "uint256"
-			},
-			{
-				"name": "valor_inicial",
-				"type": "uint256"
-			},
-			{
-				"name": "lance_atual",
-				"type": "uint256"
-			},
-			{
-				"name": "diferenca_minima",
-				"type": "uint256"
-			},
-			{
-				"name": "data_expiracao",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "itens_disponiveis",
-		"outputs": [
-			{
-				"name": "dono_lance_atual",
-				"type": "address"
-			},
-			{
-				"name": "dono",
-				"type": "address"
-			},
-			{
-				"name": "titulo",
-				"type": "string"
-			},
-			{
-				"name": "descricao",
-				"type": "string"
-			},
-			{
-				"name": "token",
-				"type": "uint256"
-			},
-			{
-				"name": "valor_inicial",
-				"type": "uint256"
-			},
-			{
-				"name": "lance_atual",
-				"type": "uint256"
-			},
-			{
-				"name": "diferenca_minima",
-				"type": "uint256"
-			},
-			{
-				"name": "data_expiracao",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "",
-				"type": "address"
-			}
-		],
-		"name": "ownerTokenCount",
-		"outputs": [
-			{
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "_num_item",
-				"type": "uint256"
-			}
-		],
-		"name": "ver_ganhador",
-		"outputs": [
-			{
-				"name": "",
-				"type": "address"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
 	}
 ]

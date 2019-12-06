@@ -65,6 +65,19 @@
                     <div class="input-group" id="itens">
                         
                     </div>
+                </form>                
+
+                <form class="card p-2">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="item_id" placeholder="Número correspondente ao item">
+                    </div>
+                    <div class="input-group">
+                            <input type="text" class="form-control" id="item_lance_atual" placeholder="Valor do lance">
+                        </div>
+                    <br />
+                    <div class="input-group">
+                        <button type="button" onclick="dar_lance()" class="btn btn-secondary">Dar Lance</button>
+                    </div>
                 </form>
             </div>
         </div>        
@@ -81,7 +94,7 @@
         var actualAccount;
         
         function startApp(){
-            var contractAddress = '0xCC3d1489705818987d5bE452fab48C618763F618';
+            var contractAddress = '0x20f0FD75DC62967fB1D0E3e6cf0C9c21E79A1C00';
         
             leilao = new web3.eth.Contract(abi, contractAddress);
 
@@ -99,6 +112,14 @@
                     atualizarDados();
                 }
             }, 100);
+        }
+
+        function dar_lance(id){
+            var id = document.getElementById("item_id").value;
+            var lance_atual = document.getElementById("item_lance_atual").value;
+            var valor = 1000000000000000000*lance_atual;
+            leilao.methods.dar_lance(id).send({ from: userAccount, value: valor });
+            return false;
         }
 
         function mostrar_itens_disponiveis() {
