@@ -147,11 +147,7 @@ contract Leilao {
         }
         
         delete itens[_num_item];
-        for (uint i = 0; i < itens_disponiveis.length; i++) {
-            if (itens_disponiveis[i].token == _num_item) {
-                delete itens_disponiveis[i];
-            }
-        }            
+        delete itens_disponiveis[_num_item];
     }
 
     function _transferir(address _dono_lance_anterior, uint _valor) private {
