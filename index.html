@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Leilão</title>
+    <link href='https://fonts.googleapis.com/css?family=Open Sans:400,700' rel='stylesheet' type='text/css'>
+    <link href='bootstrap.min.css' rel='stylesheet' type='text/css'>
+    <script language="javascript" type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script language="javascript" type="text/javascript"
+        src="https://cdn.jsdelivr.net/npm/web3-min-js@1.0.0/web3.min.js"></script>
+    <script language="javascript" type="text/javascript" src="js/abi.js"></script>
+</head>
+
+<body class="bg-light">
+
+    <div class="container">
+        <div class="py-5 text-center">
+            <h2>Leilão</h2>
+        </div>
+
+        <div class="row">
+            <div class="col-md order-md mb">
+                <h4 class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="text-muted">Leilão</span>
+                </h4>
+                
+
+                <form class="card p-2">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="addItem" placeholder="addItem">
+                        <div class="input-group-append">
+                            <button type="button" onclick="adicionar_item()" class="btn btn-secondary">Adicionar Item!</button>
+                        </div>
+                    </div>
+                    
+                </form>
+            </div>
+
+
+
+        </div>
+        <p id="contractAddress" class="text-center"></p>
+
+        <footer class="my-5 pt-5 text-muted text-center text-small">
+            <p class="mb-1">IMD - IMD0729</p>
+        </footer>
+    </div>
+
+    <script>
+        var userAccount;
+        
+        function startApp(){
+            var contractAddress = '0x942e85C4bDe6fD9B77Dc0f89DaC0C4477F04728F';
+        
+            var contrato = new web3.eth.Contract(abi, contractAddress);
+
+            var accountInterval = setInterval(function() {
+                // Check if account has changed
+                if (web3.eth.accounts[0] !== userAccount) {
+                    userAccount = web3.eth.accounts[0];
+                    // Call some function to update the UI with the new account
+                    $("#contractAddress").text("Your Account: " + userAccount);
+                }
+            }, 100);
+
+            
+        }
+        
+        
+        
+        // Padrão para detectar um web3 injetado.
+        window.addEventListener('load', function () {
+            web3Provider = null;
+            // Modern dapp browsers...
+            if (window.ethereum) {
+                web3Provider = window.ethereum;
+                try {
+                    // Request account access
+                    window.ethereum.enable();
+                } catch (error) {
+                    // User denied account access...
+                    console.error("User denied account access")
+                }
+            }
+            // Legacy dapp browsers...
+            else if (window.web3) {
+                web3Provider = window.web3.currentProvider;
+            }
+            // If no injected web3 instance is detected, fall back to Ganache
+            else {
+                console.log('No web3? You should consider trying MetaMask!')
+                web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
+            }
+            web3 = new Web3(web3Provider);
+            startApp()
+        })
+
+        
+    </script>
+
+</body>
+
+</html>
