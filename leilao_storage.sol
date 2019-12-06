@@ -1,11 +1,11 @@
 pragma solidity 0.4.25;
-pragma experimental ABIEncoderV2;
 
 contract LeilaoStorage {
-
-    event ItemAdicionado(string titulo, string descricao, uint valor_inicial, uint diferenca_minima, uint data_expiracao);
     
     uint count_item;
+    uint count_itens_disponiveis;
+
+    event ItemAdicionado(string titulo, string descricao, uint valor_inicial, uint diferenca_minima, uint data_expiracao);
 
     struct Item {
         address dono_lance_atual; // Endereco que esta vencendo o leilao
@@ -21,8 +21,8 @@ contract LeilaoStorage {
         uint data_expiracao; // Duração do item no leilão
     }
 
-    modifier onlyOwnerOfToken (uint256 _tokenId) {
-        require(msg.sender == _tokenOwner[_tokenId]);
+    modifier onlyOwnerOfToken (address _from, uint256 _tokenId) {
+        require(_from == _tokenOwner[_tokenId]);
         _;
     }
     
@@ -32,24 +32,23 @@ contract LeilaoStorage {
     }
 
     mapping (uint => Item) public itens; // mapping de itens
-    
     mapping (address => uint256) public ownerTokenCount; // Armazena o saldo de cada conta que possui tokens
-    
     mapping (uint256 => address) internal _tokenOwner; // Relaciona o token com o dono
     
     Item[] public itens_disponiveis;
 
     function adicionar_item(string _titulo, string _descricao, uint _valor_inicial, uint _diferenca_minima, uint _qtd_dias) public {
         count_item++;
+        count_itens_disponiveis++;
         
         Item memory novo_item = Item(0,
                                     msg.sender,
                                     _titulo,
                                     _descricao,
                                     count_item,
-                                    (_valor_inicial * 1 ether),
-                                    (_valor_inicial * 1 ether),
-                                    (_diferenca_minima * 1 ether),
+                                    _valor_inicial,
+                                    _valor_inicial,
+                                    _diferenca_minima,
                                     (now + _qtd_dias * 1 days));
 
         ownerTokenCount[this]++;
@@ -61,4 +60,3 @@ contract LeilaoStorage {
         emit ItemAdicionado(novo_item.titulo, novo_item.descricao, novo_item.valor_inicial, novo_item.diferenca_minima, novo_item.data_expiracao);
     }
 }
-
