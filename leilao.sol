@@ -150,7 +150,7 @@ contract Leilao {
         
         delete itens[_num_item];
         for (uint i = 0; i < count_itens_disponiveis; i++) {
-            if (itens_disponiveis[i] == _num_item) {
+            if (itens_disponiveis[i].token == _num_item) {
                 delete itens_disponiveis[i];
             }
         }
