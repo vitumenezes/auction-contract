@@ -29,44 +29,122 @@
 
                 <form class="card p-2">
                     <div class="input-group">
-                        <input type="text" class="form-control" id="addItem" placeholder="addItem">
-                        <div class="input-group-append">
-                            <button type="button" onclick="adicionar_item()" class="btn btn-secondary">Adicionar Item!</button>
-                        </div>
+                        <input type="text" class="form-control" id="item_titulo" placeholder="Titulo do item">
                     </div>
+                    <br />
+                    <div class="input-group">
+                        <textarea class="form-control" rows="4" cols="20" id="item_descricao" placeholder="Descrição do item"></textarea>
+                    </div>
+                    <br />
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="item_valor_inicial" placeholder="Valor inicial do item">
+                    </div>
+                    <br />
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="item_valor_incremento" placeholder="Valor de incremento do item">
+                    </div>  
+                    <br />
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="item_data_expiracao" placeholder="Duração do leilão">
+                    </div>
+                    <br />         
+                    
+                    <button type="button" onclick="adicionar_item()" class="btn btn-secondary">Adicionar Item</button>
                     
                 </form>
+                <br />
+
+                <form class="card p-2">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="item_id" placeholder="Número do item">
+                    </div>
+                    <br />
+                    <div class="input-group">
+                        <button type="button" onclick="mostrar_itens_disponiveis()" class="btn btn-secondary">Mostrar Itens</button>
+                    </div>
+                    <div class="input-group" id="itens">
+                        
+                    </div>
+                </form>
             </div>
-
-
-
-        </div>
-        <p id="contractAddress" class="text-center"></p>
+        </div>        
 
         <footer class="my-5 pt-5 text-muted text-center text-small">
+            <p id="contractAddress" class="text-center"></p>
             <p class="mb-1">IMD - IMD0729</p>
         </footer>
     </div>
 
     <script>
+        var leilao;
         var userAccount;
+        var actualAccount;
         
         function startApp(){
-            var contractAddress = '0x942e85C4bDe6fD9B77Dc0f89DaC0C4477F04728F';
+            var contractAddress = '0xc968490D42a9bb8F84023Ce7F59641FEd5b0Fb41';
         
-            var contrato = new web3.eth.Contract(abi, contractAddress);
+            leilao = new web3.eth.Contract(abi, contractAddress);
 
             var accountInterval = setInterval(function() {
+
+                web3.eth.getAccounts().then(function (result) {
+                    actualAccount = result[0];
+                })
+
                 // Check if account has changed
-                if (web3.eth.accounts[0] !== userAccount) {
-                    userAccount = web3.eth.accounts[0];
+                if (actualAccount !== userAccount) {
+                    userAccount = actualAccount;
                     // Call some function to update the UI with the new account
-                    $("#contractAddress").text("Your Account: " + userAccount);
+                    // $("#contractAddress").text("Your Account: " + userAccount);
+                    atualizarDados();
                 }
             }, 100);
-
-            
         }
+
+        function mostrar_itens_disponiveis() {
+            var ids = document.getElementById("item_id").value;
+            $("#itens").empty();
+            for (id of ids) {
+            itens_disponiveis(id)
+            .then((result) => {
+                // Using ES6's "template literals" to inject variables into the HTML.
+                const new_item = `
+                    <div class="zombie">
+                        <ul>
+                            <li>Titulo: ${result.titulo}</li>
+                            <li>Descrição: ${result.descricao}</li>
+                            <li>Token: ${result.token}</li>
+                        </ul>
+                    </div>
+                `;
+                
+                document.getElementById("itens").innerHTML = new_item;
+            });
+            }
+        }
+
+        function itens_disponiveis(id){
+            return leilao.methods.itens_disponiveis(id).call();
+        }
+
+        function atualizarDados(){
+            document.getElementById("contractAddress").innerHTML = "Your Account: " + userAccount;
+        }
+
+        function adicionar_item(){
+            var titulo = document.getElementById("item_titulo").value;
+            var descricao = document.getElementById("item_descricao").value;
+            var valor_inicial = document.getElementById("item_valor_inicial").value;
+
+            var valor_incremento = document.getElementById("item_valor_incremento").value;
+
+            var data_expiracao = document.getElementById("item_data_expiracao").value;
+
+            leilao.methods.adicionar_item(titulo, descricao, valor_inicial, valor_incremento, data_expiracao).send({ from: userAccount });
+            return false;
+
+        }
+
         
         
         
