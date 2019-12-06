@@ -3,7 +3,7 @@ pragma experimental ABIEncoderV2;
 
 contract LeilaoStorage {
 
-    event ItemAdicionado();
+    event ItemAdicionado(string titulo, string descricao, uint valor_inicial, uint diferenca_minima, uint data_expiracao);
     
     uint count_item;
 
@@ -56,5 +56,7 @@ contract LeilaoStorage {
         _tokenOwner[novo_item.token] = this;
         itens[count_item] = novo_item;
         itensAdicionados.push(novo_item);
+        
+        emit ItemAdicionado(novo_item.titulo, novo_item.descricao, novo_item.valor_inicial, novo_item.diferenca_minima, novo_item.data_expiracao);
     }
 }
