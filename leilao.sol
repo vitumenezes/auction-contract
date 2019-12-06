@@ -3,6 +3,7 @@ pragma solidity 0.4.25;
 contract Leilao {
 
     uint count_item;
+    uint count_itens_disponiveis;
 
     event ItemAdicionado(string titulo, string descricao, uint valor_inicial, uint diferenca_minima, uint data_expiracao);
     event LanceAdicionado(address bidder, uint num_item, uint valor_lance);
@@ -42,6 +43,7 @@ contract Leilao {
 
     function adicionar_item(string _titulo, string _descricao, uint _valor_inicial, uint _diferenca_minima, uint _qtd_dias) public {
         count_item++;
+        count_itens_disponiveis++;
         
         Item memory novo_item = Item(0,
                                     msg.sender,
@@ -147,7 +149,13 @@ contract Leilao {
         }
         
         delete itens[_num_item];
-        delete itens_disponiveis[_num_item];
+        for (uint i = 0; i < count_itens_disponiveis; i++) {
+            if (itens_disponiveis[i] == _num_item) {
+                delete itens_disponiveis[i];
+            }
+        }
+        count_itens_disponiveis--;
+        
     }
 
     function _transferir(address _dono_lance_anterior, uint _valor) private {
