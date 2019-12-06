@@ -16,7 +16,7 @@ contract LeilaoToken is LeilaoStorage, ERC721 {
     }
     
     function transfer(address _to, uint256 _tokenId) public {
-        _transfer(msg.sender, _to, _tokenId);
+        _transfer(this, _to, _tokenId);
     }
     
     function _transfer(address _from, address _to, uint256 _tokenId) private onlyOwnerOfToken(_from, _tokenId) {
