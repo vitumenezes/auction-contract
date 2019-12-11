@@ -33,8 +33,6 @@ contract Leilao {
     **/
     event Approval(address indexed _owner, address indexed _approved, uint256 _tokenId);
 
-
-
     struct Item {
         address dono_lance_atual; // Endereco que esta vencendo o leilao
         address dono; // Endereco que adicionou o item para leilao
