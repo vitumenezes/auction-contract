@@ -1,13 +1,14 @@
-var leilao;
+var contractAddress = '0x20f0FD75DC62967fB1D0E3e6cf0C9c21E79A1C00';
+var leilao = new web3.eth.contract(abi, contractAddress);;
 var userAccount;
 var actualAccount;
 
 function startApp(){
-    var contractAddress = '0x20f0FD75DC62967fB1D0E3e6cf0C9c21E79A1C00';
+    //var contractAddress = '0x20f0FD75DC62967fB1D0E3e6cf0C9c21E79A1C00';
 
     var ok = document.getElementById("itens");
 
-    leilao = new web3.eth.Contract(abi, contractAddress);
+    //leilao = new web3.eth.Contract(abi, contractAddress);
 
     var accountInterval = setInterval(function() {
 
@@ -41,27 +42,27 @@ function mostrar_itens_disponiveis() {
     .then((result) => {
         // Using ES6's "template literals" to inject variables into the HTML.
         const new_item = `
-            <div class="zombie">
-                <ul>
-                    <li>Titulo: ${result.titulo}</li>
-                    <li>Descrição: ${result.descricao}</li>
-                    <li>Token: ${result.token}</li>
-                </ul>
-            </div>
-        `;
+                <tr>
+                    <td> ${result.titulo}</td>
+                    <td> ${result.descricao}</td>
+                    <td> ${result.lance_atual}</td>
+                    <td> ${result.data_expiracao}</td>
+                </tr>
+            `;
 
-        document.getElementById("itens").innerHTML = new_item;
+        document.getElementsByTagName("tbody").innerHTML = new_item;
     });
     }
 }
 
 function show_itens() {
-    var count_itens_disponiveis = leilao.methods.itens_disponiveis().call();
+    var count_itens_disponiveis = leilao.methods.itens_disponiveis().call()
+    .then(console.log);
+    console.log(count_itens_disponiveis);
+    $("#itens").empty();
 
-    //table_tbody.empty();
-
-    for (var i; i < count_itens_disponiveis; i++) {
-        itens_disponiveis(i)
+    for (id of count_itens_disponiveis) {
+        itens_disponiveis(id)
         .then((result) => {
             // Using ES6's "template literals" to inject variables into the HTML.
             const new_item = `
@@ -79,7 +80,7 @@ function show_itens() {
 }
 
 function itens_disponiveis(id){
-    return leilao.methods.itens_disponiveis().call();
+    return leilao.methods.itens_disponiveis(id).call();
 }
 
 function adicionar_item(){
@@ -98,7 +99,7 @@ function adicionar_item(){
 
 function atualizarDados(){
     document.getElementById("user-address").innerHTML = "Your Account: " + userAccount;
-    show_itens();
+    //show_itens();
 }
 
 // Padrão para detectar um web3 injetado.
