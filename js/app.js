@@ -56,36 +56,30 @@ function mostrar_itens_disponiveis() {
 }
 
 function show_itens() {
-    var table_tbody = document.getElementById("itens").getElementsByName('tbody')[0];
-    var count_itens_disponiveis = leilao.methods.count_itens_disponiveis().call();
+    var count_itens_disponiveis = leilao.methods.itens_disponiveis().call();
 
-    table_tbody.empty();
+    //table_tbody.empty();
 
     for (var i; i < count_itens_disponiveis; i++) {
         itens_disponiveis(i)
         .then((result) => {
             // Using ES6's "template literals" to inject variables into the HTML.
             const new_item = `
-                <div class="item">
-                    <ul>
-                        <li>Titulo: ${result.titulo}</li>
-                        <li>Descrição: ${result.descricao}</li>
-                        <li>Token: ${result.token}</li>
-                    </ul>
-                </div>
+                <tr>
+                    <td> ${result.titulo}</td>
+                    <td> ${result.descricao}</td>
+                    <td> ${result.lance_atual}</td>
+                    <td> ${result.data_expiracao}</td>
+                </tr>
             `;
 
-            table_tbody.innerHTML = new_item;
+            document.getElementsByTagName("tbody").innerHTML = new_item;
         });
     }
 }
 
 function itens_disponiveis(id){
-    return leilao.methods.itens_disponiveis(id).call();
-}
-
-function atualizarDados(){
-    document.getElementById("contractAddress").innerHTML = "Your Account: " + userAccount;
+    return leilao.methods.itens_disponiveis().call();
 }
 
 function adicionar_item(){
@@ -93,11 +87,43 @@ function adicionar_item(){
     var descricao = document.getElementById("item_descricao").value;
     var valor_inicial = document.getElementById("item_valor_inicial").value;
 
-    var valor_incremento = document.getElementById("item_valor_incremento").value;
+    var diferenca_minima = document.getElementById("item_valor_incremento").value;
 
     var data_expiracao = document.getElementById("item_data_expiracao").value;
 
-    leilao.methods.adicionar_item(titulo, descricao, valor_inicial, valor_incremento, data_expiracao).send({ from: userAccount });
+    leilao.methods.adicionar_item(titulo, descricao, valor_inicial, diferenca_minima, data_expiracao).send({ from: userAccount });
     return false;
 
 }
+
+function atualizarDados(){
+    document.getElementById("user-address").innerHTML = "Your Account: " + userAccount;
+    show_itens();
+}
+
+// Padrão para detectar um web3 injetado.
+window.addEventListener('load', function () {
+    web3Provider = null;
+    // Modern dapp browsers...
+    if (window.ethereum) {
+        web3Provider = window.ethereum;
+        try {
+            // Request account access
+            window.ethereum.enable();
+        } catch (error) {
+            // User denied account access...
+            console.error("User denied account access")
+        }
+    }
+    // Legacy dapp browsers...
+    else if (window.web3) {
+        web3Provider = window.web3.currentProvider;
+    }
+    // If no injected web3 instance is detected, fall back to Ganache
+    else {
+        console.log('No web3? You should consider trying MetaMask!')
+        web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
+    }
+    web3 = new Web3(web3Provider);
+    startApp()
+})
